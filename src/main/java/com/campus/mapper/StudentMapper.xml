@@ -1,0 +1,10 @@
+<!-- StudentMapper.xml -->
+<mapper namespace="com.campus.mapper.StudentMapper">
+    <select id="selectAll" resultType="com.campus.entity.Student">
+        SELECT * FROM student
+    </select>
+    <insert id="insert" parameterType="com.campus.entity.Student">
+        INSERT INTO student(name, student_id, class, major)
+        VALUES(#{name}, #{studentId}, #{class_}, #{major})
+    </insert>
+</mapper>
