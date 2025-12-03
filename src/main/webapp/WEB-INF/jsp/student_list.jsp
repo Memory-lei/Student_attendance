@@ -6,6 +6,7 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 </head>
 <body>
+<h2>学生列表</h2>
 <table border="1">
     <tr>
         <th>姓名</th>
@@ -23,7 +24,7 @@
                 html += `<tr>
                         <td>${s.name}</td>
                         <td>${s.studentId}</td>
-                        <td>${s.class}</td>
+                        <td>${s.class_}</td>  <!-- 注意这里是class_ -->
                         <td>${s.major}</td>
                     </tr>`;
             });
