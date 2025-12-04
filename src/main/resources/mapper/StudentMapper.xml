@@ -3,20 +3,39 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.campus.mapper.StudentMapper">
-    <select id="selectAll" resultType="com.campus.entity.Student">
+
+    <resultMap id="studentMap" type="com.campus.entity.Student">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="studentId" column="student_id"/>
+        <result property="class_" column="class"/>
+        <result property="major" column="major"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="studentMap">
         SELECT * FROM student
     </select>
-    <!-- 修改 insert 和 update 语句中的 class 字段 -->
-    <insert id="insert" parameterType="com.campus.entity.Student">
-        INSERT INTO student(name, student_id, `class`, major)  <!-- 新增反引号 -->
+
+    <select id="selectByStudentId" parameterType="string" resultMap="studentMap">
+        SELECT * FROM student WHERE student_id = #{studentId}
+    </select>
+
+    <insert id="insert" parameterType="com.campus.entity.Student" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO student(name, student_id, `class`, major)
         VALUES(#{name}, #{studentId}, #{class_}, #{major})
     </insert>
+
     <update id="update" parameterType="com.campus.entity.Student">
         UPDATE student
-        SET name = #{name}, student_id = #{studentId}, `class` = #{class_}, major = #{major}  <!-- 新增反引号 -->
+        SET name = #{name},
+            student_id = #{studentId},
+            `class` = #{class_},
+            major = #{major}
         WHERE id = #{id}
     </update>
+
     <delete id="delete" parameterType="java.lang.Integer">
         DELETE FROM student WHERE id = #{id}
     </delete>
+
 </mapper>
