@@ -5,24 +5,29 @@ import java.util.Date;
 
 public class AttendanceRecord {
     private Integer id;
-    private String studentId;
-    private String courseName;
+    private Integer studentId;
+    private Integer courseID;
     private Date attendanceDate;
     private Date attendanceTime;
     private String status; // PRESENT/ABSENT/LATE
     private String remarks;
-    private String createdBy;
+    private Integer createdBy;
     private Date createTime;
+
+    // 添加关联对象（用于查询显示）
+//    private Student student;
+//    private Course course;
+//    private Teacher teacher;
 
     // getters and setters
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 
-    public String getStudentId() { return studentId; }
-    public void setStudentId(String studentId) { this.studentId = studentId; }
+    public Integer getStudentId() { return studentId; }
+    public void setStudentId(Integer studentId) { this.studentId = studentId; }
 
-    public String getCourseName() { return courseName; }
-    public void setCourseName(String courseName) { this.courseName = courseName; }
+    public Integer getCourseId() { return courseID; }
+    public void setCourseId(Integer courseID) { this.courseID = courseID; }
 
     public Date getAttendanceDate() { return attendanceDate; }
     public void setAttendanceDate(Date attendanceDate) { this.attendanceDate = attendanceDate; }
@@ -36,9 +41,10 @@ public class AttendanceRecord {
     public String getRemarks() { return remarks; }
     public void setRemarks(String remarks) { this.remarks = remarks; }
 
-    public String getCreatedBy() { return createdBy; }
-    public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
+    public Integer getCreatedBy() { return createdBy; }
+    public void setCreatedBy(Integer createdBy) { this.createdBy = createdBy; }
 
     public Date getCreateTime() { return createTime; }
     public void setCreateTime(Date createTime) { this.createTime = createTime; }
+
 }
