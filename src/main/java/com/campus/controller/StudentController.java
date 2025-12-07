@@ -22,7 +22,7 @@ public class StudentController {
     }
 
     @GetMapping("/{studentId}")
-    public Map<String, Object> getByStudentId(@PathVariable String studentId) {
+    public Map<String, Object> getByStudentId(@PathVariable Integer studentId) {
         Map<String, Object> result = new HashMap<>();
         Student student = studentService.getByStudentId(studentId);
 

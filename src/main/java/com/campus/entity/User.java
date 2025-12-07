@@ -6,7 +6,8 @@ public class User {
     private String username;
     private String password;
     private String role; // ADMIN/TEACHER/STUDENT
-
+    private Integer studentId;  // 如果是学生角色，关联学生ID
+    private Integer teacherId;  // 如果是教师角色，关联教师ID
     // 新增构造方法
     public User() {}
 

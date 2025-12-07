@@ -6,6 +6,7 @@ public class Student {
     private String studentId;
     private String class_;
     private String major;
+    private Integer userId;
 
     public Integer getId() {
         return id;
