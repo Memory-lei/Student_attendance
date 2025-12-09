@@ -1,4 +1,3 @@
-// com/campus/service/impl/AttendanceServiceImpl.java
 package com.campus.service.impl;
 
 import com.campus.entity.AttendanceRecord;
@@ -21,19 +20,19 @@ public class AttendanceServiceImpl implements AttendanceService {
     private AttendanceMapper attendanceMapper;
 
     @Autowired
-    private StudentMapper studentMapper;  // 使用你定义的StudentMapper
+    private StudentMapper studentMapper;
 
     @Override
     @Transactional
     public boolean recordAttendance(AttendanceRecord record) {
-        // 验证学生是否存在 - 使用 selectByStudentId 方法
+        // 验证学生是否存在 - 参数类型改为 Integer
         Student student = studentMapper.selectByStudentId(record.getStudentId());
 
         if (student == null) {
             throw new RuntimeException("学生不存在，学号：" + record.getStudentId());
         }
 
-        // 检查是否已考勤
+        // 检查是否已考勤 - 参数类型改为 Integer
         if (checkAttendanceExists(record.getStudentId(), record.getAttendanceDate())) {
             throw new RuntimeException("该学生今天已考勤，学号：" + record.getStudentId());
         }
@@ -49,13 +48,13 @@ public class AttendanceServiceImpl implements AttendanceService {
     @Override
     @Transactional
     public boolean makeUpAttendance(AttendanceRecord record) {
-        // 验证学生是否存在
+        // 验证学生是否存在 - 参数类型改为 Integer
         Student student = studentMapper.selectByStudentId(record.getStudentId());
         if (student == null) {
             throw new RuntimeException("学生不存在，学号：" + record.getStudentId());
         }
 
-        // 检查是否已有记录
+        // 检查是否已有记录 - 参数类型改为 Integer
         AttendanceRecord existing = attendanceMapper.selectByStudentAndDate(
                 record.getStudentId(), record.getAttendanceDate());
 
@@ -73,7 +72,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public List<AttendanceRecord> getAttendanceByStudentId(String studentId) {
+    public List<AttendanceRecord> getAttendanceByStudentId(Integer studentId) { // 改为 Integer
         return attendanceMapper.selectByStudentId(studentId);
     }
 
@@ -88,12 +87,12 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    public Map<String, Object> getStudentAttendanceSummary(String studentId) {
+    public Map<String, Object> getStudentAttendanceSummary(Integer studentId) { // 改为 Integer
         return attendanceMapper.getStudentAttendanceSummary(studentId);
     }
 
     @Override
-    public boolean checkAttendanceExists(String studentId, Date date) {
+    public boolean checkAttendanceExists(Integer studentId, Date date) { // 改为 Integer
         AttendanceRecord record = attendanceMapper.selectByStudentAndDate(studentId, date);
         return record != null;
     }

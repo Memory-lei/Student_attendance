@@ -21,7 +21,8 @@
         VALUES(#{studentId}, #{courseName}, #{attendanceDate}, #{attendanceTime}, #{status}, #{remarks}, #{createdBy})
     </insert>
 
-    <select id="selectByStudentId" parameterType="string" resultMap="attendanceMap">
+    <!-- 修改参数类型为 integer -->
+    <select id="selectByStudentId" parameterType="integer" resultMap="attendanceMap">
         SELECT * FROM attendance_record
         WHERE student_id = #{studentId}
         ORDER BY attendance_date DESC, attendance_time DESC
@@ -33,6 +34,7 @@
         ORDER BY student_id, attendance_time
     </select>
 
+    <!-- 多参数方法不需要指定 parameterType -->
     <select id="selectByStudentAndDate" resultMap="attendanceMap">
         SELECT * FROM attendance_record
         WHERE student_id = #{studentId} AND attendance_date = #{date}
@@ -51,6 +53,43 @@
         DELETE FROM attendance_record WHERE id = #{id}
     </delete>
 
+    <!-- 新增：selectById 方法 -->
+    <select id="selectById" parameterType="int" resultMap="attendanceMap">
+        SELECT * FROM attendance_record WHERE id = #{id}
+    </select>
+
+    <!-- 新增：batchInsert 方法 -->
+    <insert id="batchInsert" parameterType="list">
+        INSERT INTO attendance_record(student_id, course_name, attendance_date, attendance_time, status, remarks, created_by)
+        VALUES
+        <foreach collection="records" item="record" separator=",">
+            (#{record.studentId}, #{record.courseName}, #{record.attendanceDate}, #{record.attendanceTime}, #{record.status}, #{record.remarks}, #{record.createdBy})
+        </foreach>
+    </insert>
+
+    <!-- 新增：selectByCondition 方法 -->
+    <select id="selectByCondition" resultMap="attendanceMap">
+        SELECT * FROM attendance_record
+        <where>
+            <if test="record.studentId != null">
+                AND student_id = #{record.studentId}
+            </if>
+            <if test="record.courseName != null and record.courseName != ''">
+                AND course_name = #{record.courseName}
+            </if>
+            <if test="record.attendanceDate != null">
+                AND attendance_date = #{record.attendanceDate}
+            </if>
+            <if test="record.status != null and record.status != ''">
+                AND status = #{record.status}
+            </if>
+        </where>
+        ORDER BY attendance_date DESC, attendance_time DESC
+        <if test="limit != null and offset != null">
+            LIMIT #{offset}, #{limit}
+        </if>
+    </select>
+
     <select id="getAttendanceStatistics" resultType="map">
         SELECT
             attendance_date as date,
@@ -64,6 +103,7 @@
         ORDER BY attendance_date DESC
     </select>
 
+    <!-- 这个方法的参数类型保持为 string -->
     <select id="getStudentAttendanceSummary" parameterType="string" resultType="map">
         SELECT
             student_id,
