@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campus.mapper.AttendanceMapper">
+
+    <resultMap id="attendanceMap" type="com.campus.entity.AttendanceRecord">
+        <id property="id" column="id"/>
+        <result property="studentId" column="student_id"/>
+        <result property="courseName" column="course_name"/>
+        <result property="attendanceDate" column="attendance_date"/>
+        <result property="attendanceTime" column="attendance_time"/>
+        <result property="status" column="status"/>
+        <result property="remarks" column="remarks"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.campus.entity.AttendanceRecord" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO attendance_record(student_id, course_name, attendance_date, attendance_time, status, remarks, created_by)
+        VALUES(#{studentId}, #{courseName}, #{attendanceDate}, #{attendanceTime}, #{status}, #{remarks}, #{createdBy})
+    </insert>
+
+    <!-- 修改参数类型为 integer -->
+    <select id="selectByStudentId" parameterType="integer" resultMap="attendanceMap">
+        SELECT * FROM attendance_record
+        WHERE student_id = #{studentId}
+        ORDER BY attendance_date DESC, attendance_time DESC
+    </select>
+
+    <select id="selectByDate" parameterType="date" resultMap="attendanceMap">
+        SELECT * FROM attendance_record
+        WHERE attendance_date = #{date}
+        ORDER BY student_id, attendance_time
+    </select>
+
+    <!-- 多参数方法不需要指定 parameterType -->
+    <select id="selectByStudentAndDate" resultMap="attendanceMap">
+        SELECT * FROM attendance_record
+        WHERE student_id = #{studentId} AND attendance_date = #{date}
+    </select>
+
+    <update id="update" parameterType="com.campus.entity.AttendanceRecord">
+        UPDATE attendance_record
+        SET status = #{status},
+            remarks = #{remarks},
+            attendance_time = #{attendanceTime},
+            created_by = #{createdBy}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM attendance_record WHERE id = #{id}
+    </delete>
+
+    <!-- 新增：selectById 方法 -->
+    <select id="selectById" parameterType="int" resultMap="attendanceMap">
+        SELECT * FROM attendance_record WHERE id = #{id}
+    </select>
+
+    <!-- 新增：batchInsert 方法 -->
+    <insert id="batchInsert" parameterType="list">
+        INSERT INTO attendance_record(student_id, course_name, attendance_date, attendance_time, status, remarks, created_by)
+        VALUES
+        <foreach collection="records" item="record" separator=",">
+            (#{record.studentId}, #{record.courseName}, #{record.attendanceDate}, #{record.attendanceTime}, #{record.status}, #{record.remarks}, #{record.createdBy})
+        </foreach>
+    </insert>
+
+    <!-- 新增：selectByCondition 方法 -->
+    <select id="selectByCondition" resultMap="attendanceMap">
+        SELECT * FROM attendance_record
+        <where>
+            <if test="record.studentId != null">
+                AND student_id = #{record.studentId}
+            </if>
+            <if test="record.courseName != null and record.courseName != ''">
+                AND course_name = #{record.courseName}
+            </if>
+            <if test="record.attendanceDate != null">
+                AND attendance_date = #{record.attendanceDate}
+            </if>
+            <if test="record.status != null and record.status != ''">
+                AND status = #{record.status}
+            </if>
+        </where>
+        ORDER BY attendance_date DESC, attendance_time DESC
+        <if test="limit != null and offset != null">
+            LIMIT #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="getAttendanceStatistics" resultType="map">
+        SELECT
+            attendance_date as date,
+            COUNT(*) as total,
+            SUM(CASE WHEN status = 'PRESENT' THEN 1 ELSE 0 END) as present,
+            SUM(CASE WHEN status = 'ABSENT' THEN 1 ELSE 0 END) as absent,
+            SUM(CASE WHEN status = 'LATE' THEN 1 ELSE 0 END) as late
+        FROM attendance_record
+        WHERE attendance_date BETWEEN #{startDate} AND #{endDate}
+        GROUP BY attendance_date
+        ORDER BY attendance_date DESC
+    </select>
+
+    <!-- 这个方法的参数类型保持为 string -->
+    <select id="getStudentAttendanceSummary" parameterType="string" resultType="map">
+        SELECT
+            student_id,
+            COUNT(*) as totalCount,
+            SUM(CASE WHEN status = 'PRESENT' THEN 1 ELSE 0 END) as presentCount,
+            SUM(CASE WHEN status = 'ABSENT' THEN 1 ELSE 0 END) as absentCount,
+            SUM(CASE WHEN status = 'LATE' THEN 1 ELSE 0 END) as lateCount,
+            ROUND(SUM(CASE WHEN status = 'PRESENT' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) as attendanceRate
+        FROM attendance_record
+        WHERE student_id = #{studentId}
+    </select>
+
+</mapper>

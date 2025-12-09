@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-// StudentService.java
 @Service
 public class StudentService {
     @Autowired
@@ -19,5 +18,18 @@ public class StudentService {
 
     public void add(Student student) {
         studentMapper.insert(student);
+    }
+
+    // 参数类型改为 Integer
+    public Student getByStudentId(Integer studentId) {
+        return studentMapper.selectByStudentId(studentId);
+    }
+
+    public void update(Student student) {
+        studentMapper.update(student);
+    }
+
+    public void delete(Integer id) {
+        studentMapper.delete(id);
     }
 }
